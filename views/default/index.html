@@ -44,7 +44,9 @@
  </tr>
   {{for comment in comments:}}
   <tr>
-      <td>{{=comment.post_id}}</td>
+      {{# This line below displays the formatted name from post db instead of the post.id
+        # referenced by comment db.}}
+      <td>{{=db.comment.post_id.represent(comment.post_id)}}</td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
       <td>{{=comment.author}}</td>
       <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
