@@ -68,7 +68,7 @@ def edit():
     return dict(form=form)
 
 
-def read():
+def post():
     """
     Reads a record from post db.
     """
@@ -82,8 +82,8 @@ def read():
         redirect(URL('default', 'index'))
 
     # Form is created to be viewed and is made to be read only
-    form = SQLFORM(db.post, record=post, readonly=True)
-    return dict(form=form)
+    #form = SQLFORM(db.post, record=post, readonly=True)
+    return dict(post=post)
 
 
 @auth.requires_login()
