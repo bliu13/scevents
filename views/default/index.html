@@ -3,26 +3,17 @@
 
 <h1>List of Posts</h1>
 </br>
-<table>
+<table border="1" style="width:100%">
   <tr>
+      <td >{{=B(T('Date Posted'))}}</td>
+      <td>{{=B(T('Date of Event'))}}</td>
       <td>{{=B(T('Title'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Author'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Creation Date'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Options'))}}</td>
- </tr>
+  </tr>
   {{for post in posts:}}
   <tr>
       <td>{{=post.title}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=post.author}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td>{{=post.modified_date}}</td>
       <td>{{=post.creation_date}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=A(T('Edit'), _class='btn', _href=URL('default', 'edit', args=[post.id]))}}</td>
-      <td>{{=A(T('Read'), _class='btn', _href=URL('default', 'read', args=[post.id]))}}</td>
   </tr>
   {{pass}}
 </table>
