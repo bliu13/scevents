@@ -81,9 +81,9 @@ def post():
         session.flash = T("Invalid Request: Post does not exist.")
         redirect(URL('default', 'index'))
 
-    # Form is created to be viewed and is made to be read only
-    #form = SQLFORM(db.post, record=post, readonly=True)
-    return dict(post=post)
+    comments = db(db.comment.post_id==request.args(0)).select()
+
+    return dict(post=post, comments=comments)
 
 
 @auth.requires_login()

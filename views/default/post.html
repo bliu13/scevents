@@ -1,4 +1,88 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 
-<h1>{{=post.title}}</h1>
+{{block head}}
+<style>
+#post_title{
+    /* Causes font to be in all caps. */
+    font-variant: small-caps;
+}
+
+#post_content{
+    border-radius: 5px;
+    border-style: dotted;
+    border-color: rgba(100, 125, 112, 30);
+    border-width: 2px;
+    background-color: #F0FFF0;
+
+    padding-top: 15px;
+    padding-right: 25px;
+    padding-left: 25px;
+}
+
+#post_content_title{
+    padding-bottom: 2px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#post_creation_date{
+    font-size: 75%;
+}
+
+#comment_content{
+    border-radius: 5px;
+    border-style: dotted;
+    border-color: rgba(100, 75, 112, 30);
+    border-width: 2px;
+    background-color: #E0FFF0;
+
+    padding-top: 15px;
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-bottom: 5px;
+
+    margin-bottom: 15px;
+}
+
+#post_creation_date{
+    font-style:italic;
+}
+
+ol{
+    list-style-type: none;
+}
+</style>
+{{end}}
+
+<div>
+    <h2 id='post_title'>{{=post.title}}</h2>
+</div>
+<div id='post_content'>
+    <p id='post_content_title'>Post Description</p>
+    <p>{{=post.post_content}}</p>
+    <p id='post_creation_date'>
+        Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
+        -----
+        Last Modified: {{=post.modified_date}}
+    </p>
+</div>
+
+<hr id='post_comment_seperation'>
+
+<div>
+    <h3 id='post_title'>Comments</h3>
+    <ol>
+        {{for comment in comments:}}
+        <li id='comment_content'>
+            <p>{{=comment.comment_content}}</p>
+            <p id='post_creation_date'>
+                Post Created: {{=comment.creation_date}} by <b>{{=comment.author}}</b>
+                -----
+                Last Modified: {{=comment.modified_date}}
+            </p>
+        </li>
+        {{pass}}
+    </ol>
+</div>
+{{=A(T('Reply'), _class='btn', _href=URL('default', 'add_comment'))}}
