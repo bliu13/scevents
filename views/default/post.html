@@ -49,10 +49,37 @@
     font-style:italic;
 }
 
+#comment_reply{
+    padding-top: 25px;
+}
+
 ol{
     list-style-type: none;
 }
+
+textarea {
+    resize: none;
+}
 </style>
+
+<script>
+function Comment_Box_Button(){
+    $("#reply_button").toggle();
+    $("#reply_form").toggle();
+};
+
+function SubmitReply(){
+    var user_comment = document.getElementById("user_comment").value;
+    if (user_comment.length === 0){
+        alert('You cannot submit a reply with no content.');
+        return;
+    }
+    /**************************Add post logic here**************************/
+    //When finished processing comment, we clear the textbox and toggle back.
+    document.getElementById("user_comment").value = "";
+    Comment_Box_Button();
+};
+</script>
 {{end}}
 
 <div>
@@ -68,7 +95,7 @@ ol{
     </p>
 </div>
 
-<hr id='post_comment_seperation'>
+<hr>
 
 <div>
     <h3 id='post_title'>Comments</h3>
@@ -85,4 +112,12 @@ ol{
         {{pass}}
     </ol>
 </div>
-{{=A(T('Reply'), _class='btn', _href=URL('default', 'add_comment'))}}
+<div id='comment_reply'>
+    <button id="reply_button" onclick="Comment_Box_Button()">Reply</button>
+    <form id="reply_form" style="display:none;">
+        <h3 id="post_title">Reply To Comment</h3>
+        <textarea rows="8" id="user_comment" ></textarea>
+        <br>
+        <input type="button" onclick="SubmitReply()" value="Submit" >
+    </form>
+</div>

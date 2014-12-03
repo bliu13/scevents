@@ -82,8 +82,20 @@ def post():
         redirect(URL('default', 'index'))
 
     comments = db(db.comment.post_id==request.args(0)).select()
+    post_url_comment = URL('add_user_comment')
 
-    return dict(post=post, comments=comments)
+    return dict(post=post, comments=comments, post_url_comment=post_url_comment)
+
+
+@auth.requires_login()
+def add_user_comment():
+    """
+    This function should not be 'viewed' directly and is used for AJAX processing
+    of data. This function's job is to take user comments and commit them into the
+    database.
+    """
+    ########Not finished yet.
+    return response.json(dict())
 
 
 @auth.requires_login()
