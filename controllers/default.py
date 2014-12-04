@@ -70,7 +70,14 @@ def edit():
 
 def post():
     """
-    Reads a record from post db.
+    Reads a record from post db. Also serves the comments for this post.
+
+    Bug: post_content is not displayed correctly. If users create linebreaks
+         in their post, it will not show at all on the view side because
+         'linebreak' is supposed to start a new paragraph. Current implementation
+         stuffs all the post_content under one paragraph. Possible solution is
+         to implement support for multiple <p> creation on the view side or shove
+         the post_content into <textarea> and make <textarea> borderless.
     """
 
     # Grabs the post id for what the user requested.
@@ -83,8 +90,11 @@ def post():
 
     comments = db(db.comment.post_id==request.args(0)).select()
     post_url_comment = URL('add_user_comment')
+    post_url_editpost = URL('edit_user_post')
+    post_url_editcomment = URL('edit_user_post')
 
-    return dict(post=post, comments=comments, post_url_comment=post_url_comment)
+    return dict(post=post, comments=comments, post_url_comment=post_url_comment,\
+                post_url_editpost=post_url_editpost, post_url_editcomment=post_url_editcomment)
 
 
 @auth.requires_login()
@@ -93,6 +103,13 @@ def add_user_comment():
     This function should not be 'viewed' directly and is used for AJAX processing
     of data. This function's job is to take user comments and commit them into the
     database.
+
+    Bug: comment_content is not displayed correctly. If users create linebreaks
+         in their comment, it will not show at all on the view side because
+         'linebreak' is supposed to start a new paragraph. Current implementation
+         stuffs all the comment_content under one paragraph. Possible solution is
+         to implement support for multiple <p> creation on the view side or shove
+         the comment_content into <textarea> and make <textarea> borderless.
     """
     comment_data = request.vars.comment_data or ''
 
@@ -126,6 +143,54 @@ def add_user_comment():
 
     return response.json(dict(comment_author=comment_author, comment_creation_date=comment_creation_date,\
                               comment_modified_date=comment_modified_date, comment_content=comment_content))
+
+
+@auth.requires_login()
+def edit_user_post():
+    """
+    This function should not be 'viewed' directly and is used for AJAX processing
+    of data. This function's job is to take user's edited post and commit them into the
+    database.
+
+    Bug: post_content is not displayed correctly. If users create linebreaks
+         in their post, it will not show at all on the view side because
+         'linebreak' is supposed to start a new paragraph. Current implementation
+         stuffs all the post_content under one paragraph. Possible solution is
+         to implement support for multiple <p> creation on the view side or shove
+         the post_content into <textarea> and make <textarea> borderless.
+    """
+    post_data = request.vars.post_data or ''
+
+    # Here is the bullshit, what is sent from the client side is in a form of a string
+    # and no matter what kind of data structure you created on the other side, it won't
+    # matter here so you must recreate the data yourself.
+    #
+    # What is being done here is we are separating the data that is supposed to be post_id.
+    post_id = ""
+    post_string = ""
+    for index in range(len(post_data)):
+        if post_data[index] is not ',':
+            # The first comma in the info passed in was the comma for separating
+            # the array data.
+            post_id = post_id + post_data[index]
+        else:
+            # The rest of the string is the user's comment.
+            post_string = post_data[(index+1):]
+            # Convert post_id from str to int
+            post_id = int(post_id)
+            break
+
+    db(db.post.id == post_id).update(post_content=post_string, modified_date=datetime.utcnow())
+
+    # Grab the latest comment entry
+    updated_post_entry = db.post(post_id)
+    post_author = updated_post_entry.author
+    post_creation_date = updated_post_entry.creation_date
+    post_modified_date = updated_post_entry.modified_date
+    post_content = updated_post_entry.post_content
+
+    return response.json(dict(post_author=post_author, post_creation_date=post_creation_date,\
+                              post_modified_date=post_modified_date, post_content=post_content))
 
 
 @auth.requires_login()
