@@ -180,6 +180,16 @@ def edit_user_post():
             post_id = int(post_id)
             break
 
+    # Using ugly hack to prevent logged in users who are not the author of
+    # the post from editting the post content.
+    # This is needed because using python code to hide buttons on firefox
+    # crashes the project application.
+    status = 0
+    if (db.post(post_id).email != auth.user.email):
+        status = 1
+        session.flash = T("You are not the author of this post.")
+        return response.json(dict(status=status))
+
     db(db.post.id == post_id).update(post_content=post_string, modified_date=datetime.utcnow())
 
     # Grab the latest comment entry
@@ -190,7 +200,7 @@ def edit_user_post():
     post_content = updated_post_entry.post_content
 
     return response.json(dict(post_author=post_author, post_creation_date=post_creation_date,\
-                              post_modified_date=post_modified_date, post_content=post_content))
+                              post_modified_date=post_modified_date, post_content=post_content, status=status))
 
 
 @auth.requires_login()

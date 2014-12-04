@@ -83,17 +83,6 @@ function Post_Box_Toggle(){
     $("#post_edit_form").toggle();
 };
 
-function Comment_Box_Toggle(){
-    $("#comment_content").toggle();
-    $("#comment_dates").toggle();
-    $("#comment_edit").toggle();
-    $("#comment_delete").toggle();
-
-    // Fill the textarea with the post content for editing.
-    document.getElementById("edit_comment_content").defaultValue = document.getElementById("comment_content").innerHTML;
-    $("#comment_edit_form").toggle();
-};
-
 function SubmitReply(){
     var user_comment = document.getElementById("user_comment").value;
     if (user_comment.length === 0){
@@ -157,6 +146,12 @@ function SubmitPostEdit(){
     $.post('{{=post_url_editpost}}', JSONdata, function(jdata) {
         var updated_post_entry = JSON.parse(jdata);
 
+        // Part of the ugly hack from edit_user_post() in default.py to prevent unauthorized
+        // users from editing the post content.
+        if(updated_post_entry["status"] === 1){
+            return;
+        }
+
         // Edge case for when python side returns None, but is displayed null on this side.
         modified_date = updated_post_entry["post_modified_date"]
         if(modified_date === null){
@@ -176,10 +171,6 @@ function SubmitPostEdit(){
     document.getElementById("edit_post_content").value = "";
     Post_Box_Toggle();
 }
-
-function SubmitCommentEdit(){
-    
-}
 </script>
 {{end}}
 
@@ -194,9 +185,7 @@ function SubmitCommentEdit(){
         -----
         Last Modified: {{=post.modified_date}}
     </p>
-    {{if post.email == auth.user.email:}}
     <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
-    {{pass}}
 
     <form id="post_edit_form" style="display:none;">
         <textarea rows="8" id="edit_post_content" ></textarea>
@@ -220,17 +209,6 @@ function SubmitCommentEdit(){
                 -----
                 Last Modified: {{=comment.modified_date}}
             </p>
-            {{if comment.email == auth.user.email:}}
-            <button id="comment_edit" onclick=" Comment_Box_Toggle()">Edit</button>
-            <button id="comment_delete" onclick="">Delete</button>
-            {{pass}}
-
-            <form id="comment_edit_form" style="display:none;">
-                <textarea rows="8" id="edit_comment_content" ></textarea>
-                <br>
-                <input type="button" onclick="SubmitCommentEdit()" value="Submit" >
-                <input type="button" onclick="Comment_Box_Toggle()" value="Cancel" >
-            </form>
         </li>
         {{pass}}
     </ol>
