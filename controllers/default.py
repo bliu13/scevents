@@ -94,8 +94,38 @@ def add_user_comment():
     of data. This function's job is to take user comments and commit them into the
     database.
     """
-    ########Not finished yet.
-    return response.json(dict())
+    comment_data = request.vars.comment_data or ''
+
+    # Here is the bullshit, what is sent from the client side is in a form of a string
+    # and no matter what kind of data structure you created on the other side, it won't
+    # matter here so you must recreate the data yourself.
+    #
+    # What is being done here is we are separating the data that is supposed to be post_id.
+    post_id = ""
+    comment_string = ""
+    for index in range(len(comment_data)):
+        if comment_data[index] is not ',':
+            # The first comma in the info passed in was the comma for separating
+            # the array data.
+            post_id = post_id + comment_data[index]
+        else:
+            # The rest of the string is the user's comment.
+            comment_string = comment_data[(index+1):]
+            # Convert post_id from str to int
+            post_id = int(post_id)
+            break
+
+    latest_comment = db.comment.insert(post_id=post_id, comment_content=comment_string)
+
+    # Grab the latest comment entry
+    latest_comment_entry = db.comment(latest_comment)
+    comment_author = latest_comment_entry.author
+    comment_creation_date = latest_comment_entry.creation_date
+    comment_modified_date = latest_comment_entry.modified_date
+    comment_content = latest_comment_entry.comment_content
+
+    return response.json(dict(comment_author=comment_author, comment_creation_date=comment_creation_date,\
+                              comment_modified_date=comment_modified_date, comment_content=comment_content))
 
 
 @auth.requires_login()

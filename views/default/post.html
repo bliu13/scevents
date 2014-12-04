@@ -75,7 +75,41 @@ function SubmitReply(){
         return;
     }
     /**************************Add post logic here**************************/
-    //When finished processing comment, we clear the textbox and toggle back.
+    var post_id = {{=post.id}};
+
+    comment_data = [];
+    comment_data.push(post_id);
+    comment_data.push(user_comment);
+
+    //JSONdata = "comment_data=" + JSON.stringify(comment_data);  // Not stringifying, its annoying.
+    JSONdata = "comment_data=" + comment_data;
+
+    $.post('{{=post_url_comment}}', JSONdata, function(jdata) {
+        var latest_comment_entry = JSON.parse(jdata);
+        console.log(latest_comment_entry["comment_modified_date"])
+
+        // Edge case for when python side returns None, but is displayed null on this side.
+        modified_date = latest_comment_entry["comment_modified_date"]
+        if(modified_date === null){
+            modified_date = 'None';
+        }
+
+        {{session.flash = "Comment is added."}}
+
+        // Updating the comment section with new user comment.
+        var newentry = '<p>' + latest_comment_entry["comment_content"] + '</p>'
+                 + '<p id=\'post_creation_date\'>' + 'Post Created: '
+                 + latest_comment_entry["comment_creation_date"] + ' by '
+                 + '<b>' + latest_comment_entry["comment_author"] + '</b>'
+                 + ' ----- ' + 'Last Modified: '
+                 + modified_date + '</p>'
+        var newli = $('<li id=\'comment_content\'>');
+        newli.html(newentry);
+        $("#newentry").val("");
+	    $("#comment_list").append(newli);
+    });
+
+    // When finished processing comment, we clear the textbox and toggle back.
     document.getElementById("user_comment").value = "";
     Comment_Box_Button();
 };
@@ -99,7 +133,7 @@ function SubmitReply(){
 
 <div>
     <h3 id='post_title'>Comments</h3>
-    <ol>
+    <ol id='comment_list'>
         {{for comment in comments:}}
         <li id='comment_content'>
             <p>{{=comment.comment_content}}</p>
