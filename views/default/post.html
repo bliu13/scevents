@@ -74,7 +74,6 @@ function SubmitReply(){
         alert('You cannot submit a reply with no content.');
         return;
     }
-    /**************************Add post logic here**************************/
     var post_id = {{=post.id}};
 
     comment_data = [];
@@ -153,5 +152,6 @@ function SubmitReply(){
         <textarea rows="8" id="user_comment" ></textarea>
         <br>
         <input type="button" onclick="SubmitReply()" value="Submit" >
+        <input type="button" onclick="Comment_Box_Button()" value="Cancel" >
     </form>
 </div>
