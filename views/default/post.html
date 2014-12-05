@@ -146,12 +146,6 @@ function SubmitPostEdit(){
     $.post('{{=post_url_editpost}}', JSONdata, function(jdata) {
         var updated_post_entry = JSON.parse(jdata);
 
-        // Part of the ugly hack from edit_user_post() in default.py to prevent unauthorized
-        // users from editing the post content.
-        if(updated_post_entry["status"] === 1){
-            return;
-        }
-
         // Edge case for when python side returns None, but is displayed null on this side.
         modified_date = updated_post_entry["post_modified_date"]
         if(modified_date === null){
@@ -185,7 +179,11 @@ function SubmitPostEdit(){
         -----
         Last Modified: {{=post.modified_date}}
     </p>
-    <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+    {{if auth.user_id != None:}}
+        {{if post.email == auth.user.email:}}
+        <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+        {{pass}}
+    {{pass}}
 
     <form id="post_edit_form" style="display:none;">
         <textarea rows="8" id="edit_post_content" ></textarea>

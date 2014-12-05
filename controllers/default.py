@@ -180,27 +180,31 @@ def edit_user_post():
             post_id = int(post_id)
             break
 
-    # Using ugly hack to prevent logged in users who are not the author of
-    # the post from editting the post content.
-    # This is needed because using python code to hide buttons on firefox
-    # crashes the project application.
-    status = 0
     if (db.post(post_id).email != auth.user.email):
-        status = 1
+        # If the user trying to edit the document and is not the author.
         session.flash = T("You are not the author of this post.")
-        return response.json(dict(status=status))
 
-    db(db.post.id == post_id).update(post_content=post_string, modified_date=datetime.utcnow())
+        # Grab the comment entry from db to send back even if
+        # we did not update the db for the sake of everything work
+        # correctly without change on the javascript side.
+        post_entry = db.post(post_id)
+        post_author = post_entry.author
+        post_creation_date = post_entry.creation_date
+        post_modified_date = post_entry.modified_date
+        post_content = post_entry.post_content
+    else:
+        # Else the user is the author and we can proceed to update the post_content.
+        db(db.post.id == post_id).update(post_content=post_string, modified_date=datetime.utcnow())
 
-    # Grab the latest comment entry
-    updated_post_entry = db.post(post_id)
-    post_author = updated_post_entry.author
-    post_creation_date = updated_post_entry.creation_date
-    post_modified_date = updated_post_entry.modified_date
-    post_content = updated_post_entry.post_content
+        # Grab the latest comment entry
+        updated_post_entry = db.post(post_id)
+        post_author = updated_post_entry.author
+        post_creation_date = updated_post_entry.creation_date
+        post_modified_date = updated_post_entry.modified_date
+        post_content = updated_post_entry.post_content
 
     return response.json(dict(post_author=post_author, post_creation_date=post_creation_date,\
-                              post_modified_date=post_modified_date, post_content=post_content, status=status))
+                              post_modified_date=post_modified_date, post_content=post_content))
 
 
 @auth.requires_login()
