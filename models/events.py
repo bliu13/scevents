@@ -20,24 +20,37 @@ db = DAL("sqlite://storage.sqlite")
 
 
 db.define_table('post',
-   Field('title', 'string', requires = IS_NOT_EMPTY(), length = 50, unique = True),
-   Field('author', default = get_author(), writable = False),
-   Field('email', default = get_email(), writable = False),
-   Field('phone', 'integer'),
-   Field('creation_date', 'datetime', default = datetime.utcnow(), writable = False),
-   Field('modified_date', 'datetime', default = None, writable = False),
-   Field('post_content', 'text', requires = IS_NOT_EMPTY()),
-   format = '%(title)s',
-   singular = 'post',
-   plural = 'posts')
+    Field('title', 'string', requires = IS_NOT_EMPTY(), length = 50, unique = True),
+    Field('author', default = get_author(), writable = False),
+    Field('email', default = get_email(), writable = False),
+    Field('phone', 'integer'),
+    Field('creation_date', 'datetime', default = datetime.utcnow(), writable = False),
+    Field('modified_date', 'datetime', default = None, writable = False),
+    Field('post_content', 'text', requires = IS_NOT_EMPTY()),
+    Field('post_approved', 'boolean', default = False),
+    format = '%(title)s',
+    singular = 'post',
+    plural = 'posts')
 
 
 db.define_table('comment',
-   Field('author', default = get_author(), writable = False),
-   Field('email', default = get_email(), writable = False),
-   Field('post_id', 'reference post', ondelete = 'NO ACTION'),
-   Field('creation_date', 'datetime', default = datetime.utcnow(), writable = False),
-   Field('modified_date', 'datetime', default = None, writable = False),
-   Field('comment_content', 'text', ondelete = 'NO ACTION'),
-   singular = 'comment',
-   plural = 'comments')
+    Field('author', default = get_author(), writable = False),
+    Field('email', default = get_email(), writable = False),
+    Field('post_id', 'reference post', ondelete = 'NO ACTION'),
+    Field('creation_date', 'datetime', default = datetime.utcnow(), writable = False),
+    Field('modified_date', 'datetime', default = None, writable = False),
+    Field('comment_content', 'text', ondelete = 'NO ACTION'),
+    Field('comment_approved', 'boolean', default = False),
+    singular = 'comment',
+    plural = 'comments')
+
+
+# This db is to keep track of who are the moderators to be able to
+# view the moderator page.
+db.define_table('moderator',
+    Field('name', default=get_author(), writable = False, requires = IS_NOT_EMPTY()),
+    Field('email', default=get_email(), writable = False, requires = IS_NOT_EMPTY(), unique = True),
+    Field('moderator_status', 'boolean', default = True),
+    format = '%(name)s',
+    singular = 'moderator',
+    plural = 'moderators')
