@@ -4,6 +4,25 @@
 ## This is the controller for scevents
 #########################################################################
 
+
+def find_moderator_id(user_email, moderator_database):
+    """
+    This function takes the user's email and looks through the moderator
+    database and sees if the user's email matches one of the entries inside
+    the moderator database. If it matches, it will return that moderator's id.
+    In all cases, it will return a value greater than 1 if the moderator's id
+    is found, otherwise, the function returns none.
+    """
+    status = None
+    for moderator in moderator_database:
+        if user_email != moderator.email:
+            continue
+        if (user_email == moderator.email) and (moderator.moderator_status == True):
+            status = moderator.id
+            break
+    return status
+
+
 def index():
     """
     This function is responsible for retrieving the table of posts and
@@ -50,13 +69,15 @@ def edit():
         session.flash = T("Invalid Request: Post does not exist.")
         redirect(URL('default', 'index'))
 
-    # Checks to see if the current user was the author of post.
-    if post.email != auth.user.email:
-        session.flash = T("Invalid Request: Not the author of the post.")
+    # Checks to see if the current user is the author of post or a moderator. Returns moderator_id.
+    moderator_list = db(db.moderator).select()
+    moderator_status = find_moderator_id(auth.user.email, moderator_list)
+    if (post.email != auth.user.email) and (moderator_status is None):
+        session.flash = T("Invalid Request: You are not allowed to edit or delete the post.")
         redirect(URL('default', 'index'))
 
-    # Begins editing of the note here.
-    form = SQLFORM(db.post, record=post)
+    # Begins editing of the post here.
+    form = SQLFORM(db.post, record=post, deletable=True)
     if form.process().accepted:
         # Shows that edit is done after redirecting to the index.
         session.flash = T("Edit is done.")
@@ -68,44 +89,29 @@ def edit():
     return dict(form=form)
 
 
-def find_moderator_id(user_email, moderator_database):
-    """
-    This function takes the user's email and looks through the moderator
-    database and sees if the user's email matches one of the entries inside
-    the moderator database. If it matches, it will return that moderator's id.
-    In all cases, it will return a value greater than 1 if the moderator's id
-    is found, otherwise, the function returns none.
-    """
-    status = None
-    for moderator in moderator_database:
-        if user_email != moderator.email:
-            continue
-        if (user_email == moderator.email) and (moderator.moderator_status == True):
-            status = moderator.id
-            break
-    return status
-
-
 @auth.requires_login()
 def moderator():
     """
     Serves all the comments and posts that were created. To even access this 'page', the
     user needs to be logged in.
+
+    Implementation Issue found: Cannot easily use javascript to detect which comment was clicked.
+    Currently using the same method used in HW1 to basically redirect to another page to view and
+    delete a comment or post that way.
     """
 
-    # Checks to see if the current user is a moderator.
-    moderator_status = db(db.moderator).select()
+    # Checks to see if the current user is a moderator. Returns moderator_id.
+    moderator_list = db(db.moderator).select()
+    moderator_status = find_moderator_id(auth.user.email, moderator_list)
     if moderator_status is None:
         session.flash = "You are not a moderator."
         redirect(URL('default', 'index'))
 
     # Grabs all the rows in the database.
-    posts = db(db.post).select()
-    comments = db(db.comment).select()
+    posts = db(db.post.post_approved=='False').select()
+    comments = db(db.comment.comment_approved=='False').select()
 
-    ######### Must filter out post and comments that are already approved.
-
-    return dict(post=post, comments=comments)
+    return dict(posts=posts, comments=comments)
 
 
 def post():
@@ -273,21 +279,23 @@ def edit_comment():
     Edits a record from post db.
     """
 
-    # Grabs the post id for what the user requested.
+    # Grabs the comment id for what the user requested.
     comment = db.comment(request.args(0))
 
-    # Checks to see if the post exists.
+    # Checks to see if the comment exists.
     if comment is None:
         session.flash = T("Invalid Request: Post does not exist.")
         redirect(URL('default', 'index'))
 
-    # Checks to see if the current user was the author of post.
-    if comment.email != auth.user.email:
-        session.flash = T("Invalid Request: Not the author of the post.")
+    # Checks to see if the current user is the author of comment or a moderator. Returns moderator_id.
+    moderator_list = db(db.moderator).select()
+    moderator_status = find_moderator_id(auth.user.email, moderator_list)
+    if (comment.email != auth.user.email) and (moderator_status is None):
+        session.flash = T("Invalid Request: You are not allowed to edit or delete the comment.")
         redirect(URL('default', 'index'))
 
-    # Begins editing of the note here.
-    form = SQLFORM(db.comment, record=comment)
+    # Begins editing of the comment here.
+    form = SQLFORM(db.comment, record=comment, deletable=True)
     if form.process().accepted:
         # Shows that edit is done after redirecting to the index.
         session.flash = T("Edit is done.")
