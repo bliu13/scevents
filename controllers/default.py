@@ -158,6 +158,7 @@ def add_user_comment():
          the comment_content into <textarea> and make <textarea> borderless.
     """
     comment_data = request.vars.comment_data or ''
+    commentId = request.vars.commentId or ''
 
     # Here is the bullshit, what is sent from the client side is in a form of a string
     # and no matter what kind of data structure you created on the other side, it won't
@@ -178,7 +179,7 @@ def add_user_comment():
             post_id = int(post_id)
             break
 
-    latest_comment = db.comment.insert(post_id=post_id, comment_content=comment_string)
+    latest_comment = db.comment.insert(post_id=post_id, comment_content=comment_string, sub_comment_id=commentId)
 
     # Grab the latest comment entry
     latest_comment_entry = db.comment(latest_comment)
