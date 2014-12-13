@@ -187,9 +187,11 @@ def add_user_comment():
     comment_creation_date = latest_comment_entry.creation_date
     comment_modified_date = latest_comment_entry.modified_date
     comment_content = latest_comment_entry.comment_content
+    comment_id = latest_comment_entry.comment_id
 
     return response.json(dict(comment_author=comment_author, comment_creation_date=comment_creation_date,\
-                              comment_modified_date=comment_modified_date, comment_content=comment_content))
+                              comment_modified_date=comment_modified_date, comment_content=comment_content,\
+                              comment_id=comment_id))
 
 
 @auth.requires_login()
