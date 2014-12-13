@@ -126,10 +126,11 @@ function SubmitReply(){
         var newentry1 = '<form id=\'subReplyForm'
                  + latest_comment_entry["comment_id"] + '\' style=\'display:none;\'>'
                  + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
-                 + '<textarea rows=\'8\' id=\'user_comment' 
+                 + '<textarea rows=\'8\' id=\'user_comment_sub' 
                  + latest_comment_entry["comment_id"] + '\' ></textarea>'
                  + '<br>'
-                 + '<input type=\'button\' onclick=\'SubmitReply()\' value=\'Submit\' >'
+                 + '<input type=\'button\' onclick=\'SubmitSubReply(' 
+                 + latest_comment_entry["comment_id"] + ')\' value=\'Submit\' >'
                  + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Cancel\' > </form>'
                  
