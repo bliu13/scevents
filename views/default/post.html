@@ -38,6 +38,7 @@
     padding-right: 25px;
     padding-left: 25px;
     padding-bottom: 10px;
+
     margin-bottom: 15px;
 }
 
@@ -68,11 +69,6 @@ textarea {
 function Comment_Reply_Toggle(){
     $("#reply_button").toggle();
     $("#reply_form").toggle();
-};
-    
-function Sub_Reply_Toggle(commentId){
-    $("#subReplyBtn" + commentId).toggle();
-    $("#subReplyForm" + commentId).toggle();
 };
 
 function Post_Box_Toggle(){
@@ -119,92 +115,15 @@ function SubmitReply(){
                  + '<b>' + latest_comment_entry["comment_author"] + '</b>'
                  + ' ----- ' + 'Last Modified: '
                  + modified_date + '</p>'
-                 + '<input id=\'subReplyBtn' + latest_comment_entry["comment_id"]
-                 + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Reply\'>'
-        
-        var newentry1 = '<form id=\'subReplyForm'
-                 + latest_comment_entry["comment_id"] + '\' style=\'display:none;\'>'
-                 + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
-                 + '<textarea rows=\'8\' id=\'user_comment_sub' 
-                 + latest_comment_entry["comment_id"] + '\' ></textarea>'
-                 + '<br>'
-                 + '<input type=\'button\' onclick=\'SubmitSubReply(' 
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Submit\' >'
-                 + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Cancel\' > </form>'
-                 
         var newli = $('<li id=\'comment_content_box\'>');
         newli.html(newentry);
         $("#newentry").val("");
-        $("#comment_list").append(newli);
-        $("#comment_list").append(newentry1);
+	    $("#comment_list").append(newli);
     });
 
     // When finished processing comment, we clear the textbox and toggle back.
     document.getElementById("user_comment").value = "";
     Comment_Reply_Toggle();
-};
-
-function SubmitSubReply(commentId){
-    var user_comment = document.getElementById("user_comment_sub" + commentId).value;
-    if (user_comment.length === 0){
-        alert('You cannot submit a reply with no content.');
-        return;
-    }
-    var post_id = {{=post.id}};
-
-    comment_data = [];
-    comment_data.push(post_id);
-    comment_data.push(user_comment);
-
-    //JSONdata = "comment_data=" + JSON.stringify(comment_data);  // Not stringifying, its annoying.
-    JSONdata = "comment_data=" + comment_data + "&commentId=" + commentId;
-
-    $.post('{{=post_url_comment}}', JSONdata, function(jdata) {
-        var latest_comment_entry = JSON.parse(jdata);
-        console.log(latest_comment_entry["comment_modified_date"])
-
-        // Edge case for when python side returns None, but is displayed null on this side.
-        modified_date = latest_comment_entry["comment_modified_date"]
-        if(modified_date === null){
-            modified_date = 'None';
-        }
-
-        // Updating the comment section with new user comment.
-        var newentry = '<li id=\'comment_content_box\'>'
-                 +'<p>' + latest_comment_entry["comment_content"] + '</p>'
-                 + '<p id=\'comment_dates\'>' + 'Post Created: '
-                 + latest_comment_entry["comment_creation_date"] + ' by '
-                 + '<b>' + latest_comment_entry["comment_author"] + '</b>'
-                 + ' ----- ' + 'Last Modified: '
-                 + modified_date + '</p>'
-                 + '<input id=\'subReplyBtn' + latest_comment_entry["comment_id"]
-                 + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Reply\'>'
-                 + '</li>'
-        
-        var newentry1 = '<ol> <form id=\'subReplyForm'
-                 + latest_comment_entry["comment_id"] + '\' style=\'display:none;\'>'
-                 + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
-                 + '<textarea rows=\'8\' id=\'user_comment_sub'
-                 + latest_comment_entry["comment_id"] + '\' ></textarea>'
-                 + '<br>'
-                 + '<input type=\'button\' onclick=\'SubmitSubReply('
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Submit\' >'
-                 + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + latest_comment_entry["comment_id"] + ')\' value=\'Cancel\' > </form></ol>'
-                 
-        var newli = $('<ol>');
-        newli.html(newentry);
-        $("#newentry").val("");
-        $("#subReplyForm" + commentId).after(newentry1);
-        $("#subReplyForm" + commentId).after(newli);
-    });
-
-    // When finished processing comment, we clear the textbox and toggle back.
-    document.getElementById("user_comment_sub" + commentId).value = "";
-    Sub_Reply_Toggle(commentId);
 };
 
 function SubmitPostEdit(){
@@ -246,43 +165,6 @@ function SubmitPostEdit(){
     document.getElementById("edit_post_content").value = "";
     Post_Box_Toggle();
 }
-
-function pushCommentReply(comment_content, comment_creation_date,
-                           comment_author, comment_id, comment_modified_date, sub_comment_id){
-    // Edge case for when python side returns None, but is displayed null on this side.
-    modified_date = comment_modified_date;
-    if(modified_date === null){
-        modified_date = 'None';
-    }
-    var newentry = '<li id=\'comment_content_box\'>'
-                 +'<p>' + comment_content + '</p>'
-                 + '<p id=\'comment_dates\'>' + 'Post Created: '
-                 + comment_creation_date + ' by '
-                 + '<b>' + comment_author + '</b>'
-                 + ' ----- ' + 'Last Modified: '
-                 + modified_date + '</p>'
-                 + '<input id=\'subReplyBtn' + comment_id
-                 + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + comment_id + ')\' value=\'Reply\'>'
-                 + '</li>'
-        
-    var newentry1 = '<ol> <form id=\'subReplyForm'
-                 + comment_id + '\' style=\'display:none;\'>'
-                 + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
-                 + '<textarea rows=\'8\' id=\'user_comment_sub'
-                 + comment_id + '\' ></textarea>'
-                 + '<br>'
-                 + '<input type=\'button\' onclick=\'SubmitSubReply('
-                 + comment_id + ')\' value=\'Submit\' >'
-                 + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
-                 + comment_id + ')\' value=\'Cancel\' > </form></ol>'
-
-    var newli = $('<ol>');
-    newli.html(newentry);
-    $("#newentry").val("");
-    $("#subReplyForm" + sub_comment_id).after(newentry1);
-    $("#subReplyForm" + sub_comment_id).after(newli);
-}
 </script>
 {{end}}
 
@@ -317,59 +199,20 @@ function pushCommentReply(comment_content, comment_creation_date,
     <h3 id='post_title'>Comments</h3>
     <ol id='comment_list'>
         {{for comment in comments:}}
-            <!--inserting the reply of a comment -->
-            {{if comment.sub_comment_id != None:}}
-                {{if comment.sub_comment_id != "":}}
-                    <script>
-                        pushCommentReply("{{=comment.comment_content}}", "{{=comment.creation_date}}",
-                                         "{{=comment.author}}", "{{=comment.id}}", "{{=comment.modified_date}}",
-                                         "{{=comment.sub_comment_id}}");
-                    </script>
-                {{else:}}
-                    <li id='comment_content_box'>
-                        <p id='comment_id' style="display:none;">{{=comment.id}}</p>
-                        <p id='comment_content'>{{=comment.comment_content}}</p>
-                        <p id='comment_dates'>
-                            Post Created: {{=comment.creation_date}} by <b>{{=comment.author}}</b>
-                            -----
-                            Last Modified: {{=comment.modified_date}}
-                        </p>
-                        <input id="subReplyBtn{{=comment.id}}" type="button"
-                               onclick="Sub_Reply_Toggle({{=comment.id}})" value="Reply">
-                    </li>
-                    <form id="subReplyForm{{=comment.id}}" style="display:none;">
-                        <h3 id="subTitle">Reply To Comment</h3>
-                        <textarea rows="8" id="user_comment_sub{{=comment.id}}" ></textarea>
-                        <br>
-                        <input type="button" onclick="SubmitSubReply({{=comment.id}})" value="Submit" >
-                        <input type="button" onclick="Sub_Reply_Toggle({{=comment.id}})" value="Cancel" >
-                    </form>
-                {{pass}}
-            {{else:}}
-                <li id='comment_content_box'>
-                    <p id='comment_id' style="display:none;">{{=comment.id}}</p>
-                    <p id='comment_content'>{{=comment.comment_content}}</p>
-                    <p id='comment_dates'>
-                        Post Created: {{=comment.creation_date}} by <b>{{=comment.author}}</b>
-                        -----
-                        Last Modified: {{=comment.modified_date}}
-                    </p>
-                    <input id="subReplyBtn{{=comment.id}}" type="button"
-                           onclick="Sub_Reply_Toggle({{=comment.id}})" value="Reply">
-                </li>
-                <form id="subReplyForm{{=comment.id}}" style="display:none;">
-                    <h3 id="subTitle">Reply To Comment</h3>
-                    <textarea rows="8" id="user_comment_sub{{=comment.id}}" ></textarea>
-                    <br>
-                    <input type="button" onclick="SubmitSubReply({{=comment.id}})" value="Submit" >
-                    <input type="button" onclick="Sub_Reply_Toggle({{=comment.id}})" value="Cancel" >
-                </form>
-            {{pass}}
+        <li id='comment_content_box'>
+            <p id='comment_id' style="display:none;">{{=comment.id}}</p>
+            <p id='comment_content'>{{=comment.comment_content}}</p>
+            <p id='comment_dates'>
+                Post Created: {{=comment.creation_date}} by <b>{{=comment.author}}</b>
+                -----
+                Last Modified: {{=comment.modified_date}}
+            </p>
+        </li>
         {{pass}}
     </ol>
 </div>
-<div id='comment_add'>
-     <button id="reply_button" onclick="Comment_Reply_Toggle()">Add Comment</button>
+<div id='comment_reply'>
+     <button id="reply_button" onclick="Comment_Reply_Toggle()">Reply</button>
 
      <form id="reply_form" style="display:none;">
         <h3 id="post_title">Reply To Comment</h3>
