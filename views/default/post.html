@@ -69,7 +69,7 @@ function Comment_Reply_Toggle(){
     $("#reply_button").toggle();
     $("#reply_form").toggle();
 };
-    
+
 function Sub_Reply_Toggle(commentId){
     $("#subReplyBtn" + commentId).toggle();
     $("#subReplyForm" + commentId).toggle();
@@ -122,18 +122,18 @@ function SubmitReply(){
                  + '<input id=\'subReplyBtn' + latest_comment_entry["comment_id"]
                  + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Reply\'>'
-        
+
         var newentry1 = '<form id=\'subReplyForm'
                  + latest_comment_entry["comment_id"] + '\' style=\'display:none;\'>'
                  + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
-                 + '<textarea rows=\'8\' id=\'user_comment_sub' 
+                 + '<textarea rows=\'8\' id=\'user_comment_sub'
                  + latest_comment_entry["comment_id"] + '\' ></textarea>'
                  + '<br>'
-                 + '<input type=\'button\' onclick=\'SubmitSubReply(' 
+                 + '<input type=\'button\' onclick=\'SubmitSubReply('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Submit\' >'
                  + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Cancel\' > </form>'
-                 
+
         var newli = $('<li id=\'comment_content_box\'>');
         newli.html(newentry);
         $("#newentry").val("");
@@ -183,7 +183,7 @@ function SubmitSubReply(commentId){
                  + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Reply\'>'
                  + '</li>'
-        
+
         var newentry1 = '<ol> <form id=\'subReplyForm'
                  + latest_comment_entry["comment_id"] + '\' style=\'display:none;\'>'
                  + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
@@ -194,7 +194,7 @@ function SubmitSubReply(commentId){
                  + latest_comment_entry["comment_id"] + ')\' value=\'Submit\' >'
                  + '<input type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + latest_comment_entry["comment_id"] + ')\' value=\'Cancel\' > </form></ol>'
-                 
+
         var newli = $('<ol>');
         newli.html(newentry);
         $("#newentry").val("");
@@ -265,7 +265,7 @@ function pushCommentReply(comment_content, comment_creation_date,
                  + '\' type=\'button\' onclick=\'Sub_Reply_Toggle('
                  + comment_id + ')\' value=\'Reply\'>'
                  + '</li>'
-        
+
     var newentry1 = '<ol> <form id=\'subReplyForm'
                  + comment_id + '\' style=\'display:none;\'>'
                  + '<h3 id=\'subTitle\'>Reply To Comment</h3>'
@@ -290,6 +290,16 @@ function pushCommentReply(comment_content, comment_creation_date,
     <h2 id='post_title'>{{=post.title}}</h2>
 </div>
 <div id='post_content_box'>
+    <p id='post_content_title'>Minimum Age</p>
+    <p id='post_minimum_age'>{{=post.minimum_age}}</p>
+    <p id='post_content_title'>Fees</p>
+    <p id='post_fees'>{{=post.fees}}</p>
+    <p id='post_content_title'>Expected Size</p>
+    <p id='post_expected_size'>{{=post.expected_size}}</p>
+    <p id='post_content_title'>Time of Event</p>
+    <p id='post_time_of_event'>{{=post.time_of_event}}</p>
+    <p id='post_content_title'>Location of Event</p>
+    <p id='post_location_of_event'>{{=post.location_of_event}}</p>
     <p id='post_content_title'>Post Description</p>
     <p id='post_content'>{{=post.post_content}}</p>
     <p id='post_dates'>
