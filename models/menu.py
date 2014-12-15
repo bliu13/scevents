@@ -7,8 +7,9 @@
 
 #response.logo = A(B('web',SPAN(2),'py'),XML('&trade;&nbsp;'),
 #                  _class="brand",_href="http://www.web2py.com/")
+response.logo = B('ScEvents',  _class="brand")
 
-#the following line updates the logo with a image of our choie but the CSS is still off
+#the following line updates the logo with a image of our choice is we want
 #response.logo = IMG(_src=URL('static', 'images/logo.png'))
 
 #response.title = request.application.replace('_',' ').title()
