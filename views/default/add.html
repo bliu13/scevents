@@ -44,11 +44,17 @@ body {
 }
 
 </style>
-</head>
 
-
-<body bgcolor="#E6E6FA">
-
-
-<p>{{=A('Back', _class='btn', _href=URL('default', 'index'))}}</p>
-{{=BEAUTIFY(response._vars)}}
+{{=form.custom.begin}}
+    Title: <div>{{=form.custom.widget.title}}</div>
+    Phone: <div>{{=form.custom.widget.phone}}</div>
+    Minimum Age: <div>{{=form.custom.widget.minimum_age}}</div>
+    Fees: <div>{{=form.custom.widget.fees}}</div>
+    Expected Size: <div>{{=form.custom.widget.expected_size}}</div>
+    Date of Event: <div>{{=form.custom.widget.date_of_event}}</div>
+    Time of Event: <div>{{=form.custom.widget.time_of_event}}</div>
+    Location of Event: <div>{{=form.custom.widget.location_of_event}}</div>
+    Description: <div>{{=form.custom.widget.post_content}}</div>
+    {{=form.custom.submit}}
+    {{=A('Back', _class='btn', _href=URL('default', 'index'))}}
+{{=form.custom.end}}
