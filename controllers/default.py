@@ -328,7 +328,7 @@ def edit_user_posting():
                                      expected_size=expectedSizeEdit, time_of_event=timeOfEventEdit,
                                      location_of_event=locationEventEdit,
                                      post_content=postContentEdit, modified_date=datetime.utcnow())
-    
+
     return response.json(dict(newPost=db.post(post_id)))
 
 def read_comment():
