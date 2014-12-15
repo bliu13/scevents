@@ -21,7 +21,7 @@
     padding-bottom: 10px;
 }
 
-#post_content_title{
+.post_content_title{
     padding-bottom: 2px;
     font-weight: bold;
     text-decoration: underline;
@@ -76,15 +76,25 @@ function Sub_Reply_Toggle(commentId){
 };
 
 function Post_Box_Toggle(){
-    $("#post_content_title").toggle();
+    /*
+    $(".post_content_title").toggle();
+    $("#post_minimum_age").toggle();
+    $("#post_fees").toggle();
+    $("#post_expected_size").toggle();
+    $("#post_time_of_event").toggle();
+    $("#post_location_of_event").toggle();
     $("#post_content").toggle();
     $("#post_dates").toggle();
-    $("#post_edit").toggle();
-    $("#post_delete").toggle();
 
     // Fill the textarea with the post content for editing.
     document.getElementById("edit_post_content").value = document.getElementById("post_content").innerHTML;
     $("#post_edit_form").toggle();
+
+    */
+    $("#post_information").toggle();
+    $("#post_edit_form").toggle();
+    $("#post_delete").toggle();
+
 };
 
 function SubmitReply(){
@@ -283,6 +293,34 @@ function pushCommentReply(comment_content, comment_creation_date,
     $("#subReplyForm" + sub_comment_id).after(newentry1);
     $("#subReplyForm" + sub_comment_id).after(newli);
 }
+
+function SubmitPostEditting(){
+    var minimumAgeEdit = document.getElementById('minimumAgeEdit').value;
+    var feesEdit = document.getElementById('feesEdit').value;
+    var expectedSizeEdit = document.getElementById('expectedSizeEdit').value;
+    var timeOfEventEdit = document.getElementById('timeOfEventEdit').value;
+    var locationEventEdit = document.getElementById('locationEventEdit').value;
+    var postContentEdit = document.getElementById('postContentEdit').value;
+    var post_id = {{=post.id}};
+
+    JSONdata = "minimumAgeEdit=" + minimumAgeEdit + "&feesEdit=" + feesEdit
+    + "&expectedSizeEdit=" + expectedSizeEdit + "&timeOfEventEdit="
+    + timeOfEventEdit + "&locationEventEdit=" + locationEventEdit
+    + "&postContentEdit=" + postContentEdit + "&post_id=" + post_id;
+
+    $.post('{{=post_url_edittingPost}}', JSONdata, function(jdata) {
+        var getData = JSON.parse(jdata);
+        var newPost = getData["newPost"];
+        Post_Box_Toggle();
+        $('#post_minimum_age').text(newPost.minimum_age);
+        $('#post_fees').text(newPost.fees);
+        $('#post_expected_size').text(newPost.expected_size);
+        $('#post_time_of_event').text(newPost.time_of_event);
+        $('#post_location_of_event').text(newPost.location_of_event);
+        $('#post_content').text(newPost.post_content);
+        $('#post_dates').innerHTML("Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>-----Last Modified: " + newPost.modified_date);
+    });
+}
 </script>
 {{end}}
 
@@ -290,35 +328,47 @@ function pushCommentReply(comment_content, comment_creation_date,
     <h2 id='post_title'>{{=post.title}}</h2>
 </div>
 <div id='post_content_box'>
-    <p id='post_content_title'>Minimum Age</p>
-    <p id='post_minimum_age'>{{=post.minimum_age}}</p>
-    <p id='post_content_title'>Fees</p>
-    <p id='post_fees'>{{=post.fees}}</p>
-    <p id='post_content_title'>Expected Size</p>
-    <p id='post_expected_size'>{{=post.expected_size}}</p>
-    <p id='post_content_title'>Time of Event</p>
-    <p id='post_time_of_event'>{{=post.time_of_event}}</p>
-    <p id='post_content_title'>Location of Event</p>
-    <p id='post_location_of_event'>{{=post.location_of_event}}</p>
-    <p id='post_content_title'>Post Description</p>
-    <p id='post_content'>{{=post.post_content}}</p>
-    <p id='post_dates'>
-        Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
-        -----
-        Last Modified: {{=post.modified_date}}
-    </p>
-    {{if auth.user_id != None:}}
-        {{if post.email == auth.user.email:}}
-        <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+    <div id='post_information'>
+        <p class='post_content_title'>Minimum Age</p>
+        <p id='post_minimum_age'>{{=post.minimum_age}}</p>
+        <p class='post_content_title'>Fees</p>
+        <p id='post_fees'>{{=post.fees}}</p>
+        <p class='post_content_title'>Expected Size</p>
+        <p id='post_expected_size'>{{=post.expected_size}}</p>
+        <p class='post_content_title'>Time of Event</p>
+        <p id='post_time_of_event'>{{=post.time_of_event}}</p>
+        <p class='post_content_title'>Location of Event</p>
+        <p id='post_location_of_event'>{{=post.location_of_event}}</p>
+        <p class='post_content_title'>Post Description</p>
+        <p id='post_content'>{{=post.post_content}}</p>
+        <p id='post_dates'>
+            Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
+            -----
+            Last Modified: {{=post.modified_date}}
+        </p>
+        {{if auth.user_id != None:}}
+            {{if post.email == auth.user.email:}}
+            <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+            {{pass}}
         {{pass}}
-    {{pass}}
+    </div>
 
-    <form id="post_edit_form" style="display:none;">
+    <div id="post_edit_form" style="display:none;">
+        Minimum Age: <br/><input type="text" id="minimumAgeEdit" value="{{=post.minimum_age}}"> <br/>
+        Fees: <br/><input type="text" id="feesEdit" value="{{=post.fees}}"><br/>
+        Expected Size: <br/><input type="text" id="expectedSizeEdit" value="{{=post.expected_size}}"><br/>
+        Time of Event: <br/><input type="text" id="timeOfEventEdit" value="{{=post.time_of_event}}"><br/>
+        Location of Event: <br/><input type="text" id="locationEventEdit" value="{{=post.location_of_event}}"><br/>
+        Post Description: <br/><textarea type="text" id="postContentEdit" rows="8">{{=post.post_content}}</textarea><br/>
+        <input type="button" onclick="SubmitPostEditting()" value="Submit">
+        <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
+    </div>
+    <!--form id="post_edit_form" style="display:none;">
         <textarea rows="8" id="edit_post_content" ></textarea>
         <br>
         <input type="button" onclick="SubmitPostEdit()" value="Submit" >
-        <input type="button" onclick="Post_Box_Toggle()" value="Cancel" >
-    </form>
+        <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
+    </form-->
 </div>
 
 <hr>
