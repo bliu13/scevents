@@ -8,15 +8,6 @@ body {
     background-color: #e6e6fa;
 }
 
-table{
-    border: 2px solid blue;
-}
-
-td{
-    width: 150px;
-    border: 2px solid blue;
-}
-
 #post_content_box{
     border-radius: 5px;
     border-style: dotted;
