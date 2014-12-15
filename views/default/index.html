@@ -54,12 +54,14 @@ body {
 </br>
 
 {{for post in posts:}}
-    <div id='post_content_box'>
-        {{=A(post.title, _id='post_title', _href=URL('default', 'post', args=[post.id]))}}
-        <p id='post_dates'>
-            Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
-            -----
-            Last Modified: {{=post.modified_date}}
-        </p>
-    </div>
+    {{if post.post_approved == True:}}
+        <div id='post_content_box'>
+            {{=A(post.title, _id='post_title', _href=URL('default', 'post', args=[post.id]))}}
+            <p id='post_dates'>
+                Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
+                -----
+                Last Modified: {{=post.modified_date}}
+            </p>
+        </div>
+    {{pass}}
 {{pass}}
