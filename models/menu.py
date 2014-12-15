@@ -6,7 +6,7 @@
 #########################################################################
 
 #response.logo = A(B('web',SPAN(2),'py'),XML('&trade;&nbsp;'),
-                  _class="brand",_href="http://www.web2py.com/")
+#                  _class="brand",_href="http://www.web2py.com/")
 
 #the following line updates the logo with a image of our choie but the CSS is still off
 #response.logo = IMG(_src=URL('static', 'images/logo.png'))
