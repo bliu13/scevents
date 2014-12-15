@@ -279,6 +279,43 @@ def edit_user_posting():
     return response.json(dict(newPost=db.post(post_id)))
 
 
+@auth.requires_login()
+def edit_comment():
+    """
+    This function along with default/edit_comment.html is temporary and
+    is only used for initial testing purposes.
+
+    Edits a record from post db.
+    """
+
+    # Grabs the comment id for what the user requested.
+    comment = db.comment(request.args(0))
+
+    # Checks to see if the comment exists.
+    if comment is None:
+        session.flash = T("Invalid Request: Post does not exist.")
+        redirect(URL('default', 'index'))
+
+    # Checks to see if the current user is the author of comment or a moderator. Returns moderator_id.
+    moderator_list = db(db.moderator).select()
+    moderator_status = find_moderator_id(auth.user.email, moderator_list)
+    if (comment.email != auth.user.email) and (moderator_status is None):
+        session.flash = T("Invalid Request: You are not allowed to edit or delete the comment.")
+        redirect(URL('default', 'index'))
+
+    # Begins editing of the comment here.
+    form = SQLFORM(db.comment, record=comment, deletable=True)
+    if form.process().accepted:
+        # Shows that edit is done after redirecting to the index.
+        session.flash = T("Edit is done.")
+        redirect(URL('default', 'index'))
+
+    # Updates the modified_date in database with the same id as the one in this post.
+    db(db.comment.id == comment.id).update(modified_date = datetime.utcnow())
+
+    return dict(form=form)
+
+
 def user():
     """
     exposes:
