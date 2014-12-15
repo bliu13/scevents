@@ -138,9 +138,15 @@ def post():
     post_url_comment = URL('add_user_comment')
     post_url_editpost = URL('edit_user_post')
     post_url_editcomment = URL('edit_user_post')
+    post_url_edittingPost = URL('edit_user_posting')
+
+    # Creates the custom edit form of the post
+    custom_edit_form = SQLFORM(db.post, record=post)
+
 
     return dict(post=post, comments=comments, post_url_comment=post_url_comment,\
-                post_url_editpost=post_url_editpost, post_url_editcomment=post_url_editcomment)
+                post_url_editpost=post_url_editpost, post_url_editcomment=post_url_editcomment,\
+                custom_edit_form=custom_edit_form, post_url_edittingPost=post_url_edittingPost)
 
 
 @auth.requires_login()
@@ -309,6 +315,21 @@ def edit_comment():
 
     return dict(form=form)
 
+def edit_user_posting():
+    minimumAgeEdit = request.vars.minimumAgeEdit or ''
+    feesEdit = request.vars.feesEdit or ''
+    expectedSizeEdit = request.vars.expectedSizeEdit or ''
+    timeOfEventEdit = request.vars.timeOfEventEdit or ''
+    locationEventEdit = request.vars.locationEventEdit or ''
+    postContentEdit = request.vars.postContentEdit or ''
+    post_id = request.vars.post_id or ''
+
+    db(db.post.id == post_id).update(minimum_age=minimumAgeEdit, fees=feesEdit,
+                                     expected_size=expectedSizeEdit, time_of_event=timeOfEventEdit,
+                                     location_of_event=locationEventEdit,
+                                     post_content=postContentEdit, modified_date=datetime.utcnow())
+    
+    return response.json(dict(newPost=db.post(post_id)))
 
 def read_comment():
     """
