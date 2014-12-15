@@ -27,7 +27,7 @@
     text-decoration: underline;
 }
 
-#comment_content_box{
+#comment_content_box, #post_content{
     border-radius: 5px;
     border-style: dotted;
     border-color: rgba(100, 75, 112, 30);
@@ -332,7 +332,7 @@ function SubmitPostEditting(){
         <p class='post_content_title'>Minimum Age</p>
         <p id='post_minimum_age'>{{=post.minimum_age}}</p>
         <p class='post_content_title'>Fees</p>
-        <p id='post_fees'>{{=post.fees}}</p>
+        <p id='post_fees'>${{=post.fees}}</p>
         <p class='post_content_title'>Expected Size</p>
         <p id='post_expected_size'>{{=post.expected_size}}</p>
         <p class='post_content_title'>Time of Event</p>
