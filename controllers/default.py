@@ -139,8 +139,15 @@ def post():
     post_url_editpost = URL('edit_user_post')
     post_url_editcomment = URL('edit_user_post')
 
+    # Creates the custom edit form of the post
+    custom_edit_form = SQLFORM(db.post, record=post)
+    if custom_edit_form.process().accepted:
+        # Shows that edit is done after redirecting to the index.
+        session.flash = T("Edit is done.")
+
     return dict(post=post, comments=comments, post_url_comment=post_url_comment,\
-                post_url_editpost=post_url_editpost, post_url_editcomment=post_url_editcomment)
+                post_url_editpost=post_url_editpost, post_url_editcomment=post_url_editcomment,\
+                custom_edit_form=custom_edit_form)
 
 
 @auth.requires_login()

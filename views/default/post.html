@@ -21,7 +21,7 @@
     padding-bottom: 10px;
 }
 
-#post_content_title{
+.post_content_title{
     padding-bottom: 2px;
     font-weight: bold;
     text-decoration: underline;
@@ -76,15 +76,25 @@ function Sub_Reply_Toggle(commentId){
 };
 
 function Post_Box_Toggle(){
-    $("#post_content_title").toggle();
+    /*
+    $(".post_content_title").toggle();
+    $("#post_minimum_age").toggle();
+    $("#post_fees").toggle();
+    $("#post_expected_size").toggle();
+    $("#post_time_of_event").toggle();
+    $("#post_location_of_event").toggle();
     $("#post_content").toggle();
     $("#post_dates").toggle();
-    $("#post_edit").toggle();
-    $("#post_delete").toggle();
 
     // Fill the textarea with the post content for editing.
     document.getElementById("edit_post_content").value = document.getElementById("post_content").innerHTML;
     $("#post_edit_form").toggle();
+
+    */
+    $("#post_information").toggle();
+    $("#post_edit_form").toggle();
+    $("#post_delete").toggle();
+
 };
 
 function SubmitReply(){
@@ -290,35 +300,49 @@ function pushCommentReply(comment_content, comment_creation_date,
     <h2 id='post_title'>{{=post.title}}</h2>
 </div>
 <div id='post_content_box'>
-    <p id='post_content_title'>Minimum Age</p>
-    <p id='post_minimum_age'>{{=post.minimum_age}}</p>
-    <p id='post_content_title'>Fees</p>
-    <p id='post_fees'>{{=post.fees}}</p>
-    <p id='post_content_title'>Expected Size</p>
-    <p id='post_expected_size'>{{=post.expected_size}}</p>
-    <p id='post_content_title'>Time of Event</p>
-    <p id='post_time_of_event'>{{=post.time_of_event}}</p>
-    <p id='post_content_title'>Location of Event</p>
-    <p id='post_location_of_event'>{{=post.location_of_event}}</p>
-    <p id='post_content_title'>Post Description</p>
-    <p id='post_content'>{{=post.post_content}}</p>
-    <p id='post_dates'>
-        Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
-        -----
-        Last Modified: {{=post.modified_date}}
-    </p>
-    {{if auth.user_id != None:}}
-        {{if post.email == auth.user.email:}}
-        <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+    <div id='post_information'>
+        <p class='post_content_title'>Minimum Age</p>
+        <p id='post_minimum_age'>{{=post.minimum_age}}</p>
+        <p class='post_content_title'>Fees</p>
+        <p id='post_fees'>{{=post.fees}}</p>
+        <p class='post_content_title'>Expected Size</p>
+        <p id='post_expected_size'>{{=post.expected_size}}</p>
+        <p class='post_content_title'>Time of Event</p>
+        <p id='post_time_of_event'>{{=post.time_of_event}}</p>
+        <p class='post_content_title'>Location of Event</p>
+        <p id='post_location_of_event'>{{=post.location_of_event}}</p>
+        <p class='post_content_title'>Post Description</p>
+        <p id='post_content'>{{=post.post_content}}</p>
+        <p id='post_dates'>
+            Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
+            -----
+            Last Modified: {{=post.modified_date}}
+        </p>
+        {{if auth.user_id != None:}}
+            {{if post.email == auth.user.email:}}
+            <button id="post_edit" onclick="Post_Box_Toggle()">Edit</button>
+            {{pass}}
         {{pass}}
-    {{pass}}
+    </div>
 
-    <form id="post_edit_form" style="display:none;">
+    <div id="post_edit_form" style="display:none;">
+        {{=custom_edit_form.custom.begin}}
+            Minimum Age: <div>{{=custom_edit_form.custom.widget.minimum_age}}</div>
+            Fees: <div>{{=custom_edit_form.custom.widget.fees}}</div>
+            Expected Size: <div>{{=custom_edit_form.custom.widget.expected_size}}</div>
+            Time of Event: <div>{{=custom_edit_form.custom.widget.time_of_event}}</div>
+            Location of Event: <div>{{=custom_edit_form.custom.widget.location_of_event}}</div>
+            Post Description: <div>{{=custom_edit_form.custom.widget.post_content}}</div>
+            {{=custom_edit_form.custom.submit}}
+            <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
+        {{=custom_edit_form.custom.end}}
+    </div>
+    <!--form id="post_edit_form" style="display:none;">
         <textarea rows="8" id="edit_post_content" ></textarea>
         <br>
         <input type="button" onclick="SubmitPostEdit()" value="Submit" >
-        <input type="button" onclick="Post_Box_Toggle()" value="Cancel" >
-    </form>
+        <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
+    </form-->
 </div>
 
 <hr>
