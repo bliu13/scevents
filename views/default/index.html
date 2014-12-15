@@ -1,12 +1,7 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
-<img src="http://i.imgur.com/Qk9JUTX.jpg" style="width:1490px;height:250px">
-
 
 <div style="width: 237px;"><iframe style="display: block;" src="http://cdn1.willyweather.com/widget/loadView.html?id=11609" width="237" height="65" frameborder="0" scrolling="no"></iframe><a style="margin: -65px 0 0 0;z-index: 1;height: 65px;width: 20px;text-indent: -9999em;float: right;position: relative;display: block" href="http://www.willyweather.com/ca/santa-cruz-county/santa-cruz.html">santa cruz weather information</a></div>
-
-
-
 
 <h1>List of Posts</h1>
 </br>
@@ -24,7 +19,7 @@ body {
   background-color: LavenderBlush;
 }
 
-    
+
 .btn {
   background: #b1d1e6;
   background-image: -webkit-linear-gradient(top, #b1d1e6, #209ae6);
@@ -67,7 +62,7 @@ body {
 
 
 <body bgcolor="#E6E6FA">
-      
+
 <table>
   <tr>
       <td>{{=B(T('Date Posted'))}}</td>
@@ -85,34 +80,3 @@ body {
 </table>
 </br>
 <p>{{=A('Add', _class='btn', _href=URL('default', 'add'))}}</p>
-
-
-<h1>List of Comments</h1>
-</br>
-<table cellspacing="15">
-  <tr>
-      <td>{{=B(T('Replying To Post'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Author'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Creation Date'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Options'))}}</td>
-  </tr>
-  {{for comment in comments:}}
-  <tr>
-      {{# This line below displays the formatted name from post db instead of the post.id
-        # referenced by comment db.}}
-      <td>{{=db.comment.post_id.represent(comment.post_id)}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=comment.author}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=comment.creation_date}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=A(T('Edit'), _class='btn', _href=URL('default', 'edit_comment', args=[post.id]))}}</td>
-      <td>{{=A(T('Read'), _class='btn', _href=URL('default', 'read_comment', args=[post.id]))}}</td>
-  </tr>
-  {{pass}}
-</table>
-</br>
-<p>{{=A('Add', _class='btn', _href=URL('default', 'add_comment'))}}</p>
