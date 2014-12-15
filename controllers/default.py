@@ -56,6 +56,40 @@ def add():
 
 
 @auth.requires_login()
+def edit():
+    """
+    Edits a record from post db.
+    """
+
+    # Grabs the post id for what the user requested.
+    post = db.post(request.args(0))
+
+    # Checks to see if the post exists.
+    if post is None:
+        session.flash = T("Invalid Request: Post does not exist.")
+        redirect(URL('default', 'index'))
+
+    # Checks to see if the current user is the author of post or a moderator. Returns moderator_id.
+    moderator_list = db(db.moderator).select()
+    moderator_status = find_moderator_id(auth.user.email, moderator_list)
+    if (post.email != auth.user.email) and (moderator_status is None):
+        session.flash = T("Invalid Request: You are not allowed to edit or delete the post.")
+        redirect(URL('default', 'index'))
+
+    # Begins editing of the post here.
+    form = SQLFORM(db.post, record=post, deletable=True)
+    if form.process().accepted:
+        # Shows that edit is done after redirecting to the index.
+        session.flash = T("Edit is done.")
+        redirect(URL('default', 'moderator'))
+
+    # Updates the modified_date in database with the same id as the one in this post.
+    db(db.post.id == post.id).update(modified_date = datetime.utcnow())
+
+    return dict(form=form)
+
+
+@auth.requires_login()
 def moderator():
     """
     Serves all the comments and posts that were created. To even access this 'page', the
