@@ -56,40 +56,6 @@ def add():
 
 
 @auth.requires_login()
-def edit():
-    """
-    Edits a record from post db.
-    """
-
-    # Grabs the post id for what the user requested.
-    post = db.post(request.args(0))
-
-    # Checks to see if the post exists.
-    if post is None:
-        session.flash = T("Invalid Request: Post does not exist.")
-        redirect(URL('default', 'index'))
-
-    # Checks to see if the current user is the author of post or a moderator. Returns moderator_id.
-    moderator_list = db(db.moderator).select()
-    moderator_status = find_moderator_id(auth.user.email, moderator_list)
-    if (post.email != auth.user.email) and (moderator_status is None):
-        session.flash = T("Invalid Request: You are not allowed to edit or delete the post.")
-        redirect(URL('default', 'index'))
-
-    # Begins editing of the post here.
-    form = SQLFORM(db.post, record=post, deletable=True)
-    if form.process().accepted:
-        # Shows that edit is done after redirecting to the index.
-        session.flash = T("Edit is done.")
-        redirect(URL('default', 'index'))
-
-    # Updates the modified_date in database with the same id as the one in this post.
-    db(db.post.id == post.id).update(modified_date = datetime.utcnow())
-
-    return dict(form=form)
-
-
-@auth.requires_login()
 def moderator():
     """
     Serves all the comments and posts that were created. To even access this 'page', the
@@ -262,59 +228,6 @@ def edit_user_post():
                               post_modified_date=post_modified_date, post_content=post_content))
 
 
-@auth.requires_login()
-def add_comment():
-    """
-    This function along with default/add_comment.html is temporary and
-    is only used for initial testing purposes.
-
-    Adds a record to comment db.
-    """
-    form = SQLFORM(db.comment)
-    if form.process().accepted:
-        # The form content was valid and is accepted
-        session.flash = T("Added the new post successfully.")
-        redirect(URL('default', 'index'))
-
-    return dict(form=form)
-
-
-@auth.requires_login()
-def edit_comment():
-    """
-    This function along with default/edit_comment.html is temporary and
-    is only used for initial testing purposes.
-
-    Edits a record from post db.
-    """
-
-    # Grabs the comment id for what the user requested.
-    comment = db.comment(request.args(0))
-
-    # Checks to see if the comment exists.
-    if comment is None:
-        session.flash = T("Invalid Request: Post does not exist.")
-        redirect(URL('default', 'index'))
-
-    # Checks to see if the current user is the author of comment or a moderator. Returns moderator_id.
-    moderator_list = db(db.moderator).select()
-    moderator_status = find_moderator_id(auth.user.email, moderator_list)
-    if (comment.email != auth.user.email) and (moderator_status is None):
-        session.flash = T("Invalid Request: You are not allowed to edit or delete the comment.")
-        redirect(URL('default', 'index'))
-
-    # Begins editing of the comment here.
-    form = SQLFORM(db.comment, record=comment, deletable=True)
-    if form.process().accepted:
-        # Shows that edit is done after redirecting to the index.
-        session.flash = T("Edit is done.")
-        redirect(URL('default', 'index'))
-
-    # Updates the modified_date in database with the same id as the one in this post.
-    db(db.comment.id == comment.id).update(modified_date = datetime.utcnow())
-
-    return dict(form=form)
-
 def edit_user_posting():
     minimumAgeEdit = request.vars.minimumAgeEdit or ''
     feesEdit = request.vars.feesEdit or ''
@@ -330,26 +243,6 @@ def edit_user_posting():
                                      post_content=postContentEdit, modified_date=datetime.utcnow())
 
     return response.json(dict(newPost=db.post(post_id)))
-
-def read_comment():
-    """
-    This function along with default/read_comment.html is temporary and
-    is only used for initial testing purposes.
-
-    Reads a record from comment db.
-    """
-
-    # Grabs the post id for what the user requested.
-    comment = db.comment(request.args(0))
-
-    # Checks to see if the post exists.
-    if comment is None:
-        session.flash = T("Invalid Request: Post does not exist.")
-        redirect(URL('default', 'index'))
-
-    # Form is created to be viewed and is made to be read only
-    form = SQLFORM(db.comment, record=comment, readonly=True)
-    return dict(form=form)
 
 
 def user():
