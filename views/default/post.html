@@ -3,6 +3,46 @@
 
 {{block head}}
 <style>
+body {
+    background-color: #e6e6fa;
+}
+.btn {
+  background: #b1d1e6;
+  background-image: -webkit-linear-gradient(top, #b1d1e6, #209ae6);
+  background-image: -moz-linear-gradient(top, #b1d1e6, #209ae6);
+  background-image: -ms-linear-gradient(top, #b1d1e6, #209ae6);
+  background-image: -o-linear-gradient(top, #b1d1e6, #209ae6);
+  background-image: linear-gradient(to bottom, #b1d1e6, #209ae6);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 20px;
+  font-family: Arial;
+  color: #b8f4ff;
+  font-size: 12px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #b3d1e3;
+  background-image: -webkit-linear-gradient(top, #b3d1e3, #004675);
+  background-image: -moz-linear-gradient(top, #b3d1e3, #004675);
+  background-image: -ms-linear-gradient(top, #b3d1e3, #004675);
+  background-image: -o-linear-gradient(top, #b3d1e3, #004675);
+  background-image: linear-gradient(to bottom, #b3d1e3, #004675);
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
 #post_title{
     /* Causes font to be in all caps. */
     font-variant: small-caps;
@@ -327,6 +367,8 @@ function SubmitPostEditting(){
 }
 </script>
 {{end}}
+
+<p>{{=A('Back', _class='btn', _href=URL('default', 'index'))}}</p>
 
 <div>
     <h2 id='post_title'>{{=post.title}}</h2>
