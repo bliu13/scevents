@@ -1,73 +1,101 @@
 {{left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
-<img src="http://i.imgur.com/Qk9JUTX.jpg" style="width:1490px;height:250px">
 
-
-<div style="width: 237px;"><iframe style="display: block;" src="http://cdn1.willyweather.com/widget/loadView.html?id=11609" width="237" height="65" frameborder="0" scrolling="no"></iframe><a style="margin: -65px 0 0 0;z-index: 1;height: 65px;width: 20px;text-indent: -9999em;float: right;position: relative;display: block" href="http://www.willyweather.com/ca/santa-cruz-county/santa-cruz.html">santa cruz weather information</a></div>
-
-
-
-
-<h1>List of Posts</h1>
-</br>
+{{block head}}
 <style>
-table, td, th {
+body {
+    background-color: #e6e6fa;
+}
+
+table{
     border: 2px solid blue;
 }
 
-th {
-    background-color: green;
-    color: blue;
+td{
+    width: 150px;
+    border: 2px solid blue;
 }
 
-body {
-  background-color: LavenderBlush;
+#post_content_box{
+    border-radius: 5px;
+    border-style: dotted;
+    border-color: rgba(100, 75, 112, 30);
+    border-width: 2px;
+    background-color: #E0FFF0;
+
+    padding-top: 25px;
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
 }
 
-    
+#post_title{
+    font-size: 200%;
+}
+
+#post_dates{
+    font-size: 75%;
+    font-style:italic;
+}
+
 .btn {
-  background: #b1d1e6;
-  background-image: -webkit-linear-gradient(top, #b1d1e6, #209ae6);
-  background-image: -moz-linear-gradient(top, #b1d1e6, #209ae6);
-  background-image: -ms-linear-gradient(top, #b1d1e6, #209ae6);
-  background-image: -o-linear-gradient(top, #b1d1e6, #209ae6);
-  background-image: linear-gradient(to bottom, #b1d1e6, #209ae6);
-  -webkit-border-radius: 28;
-  -moz-border-radius: 28;
-  border-radius: 20px;
-  font-family: Arial;
-  color: #b8f4ff;
-  font-size: 12px;
-  padding: 10px 20px 10px 20px;
-  text-decoration: none;
+    background: #b1d1e6;
+    background-image: -webkit-linear-gradient(top, #b1d1e6, #209ae6);
+    background-image: -moz-linear-gradient(top, #b1d1e6, #209ae6);
+    background-image: -ms-linear-gradient(top, #b1d1e6, #209ae6);
+    background-image: -o-linear-gradient(top, #b1d1e6, #209ae6);
+    background-image: linear-gradient(to bottom, #b1d1e6, #209ae6);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 20px;
+    font-family: Arial;
+    color: #b8f4ff;
+    font-size: 12px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
 }
 
 .btn:hover {
-  background: #b3d1e3;
-  background-image: -webkit-linear-gradient(top, #b3d1e3, #004675);
-  background-image: -moz-linear-gradient(top, #b3d1e3, #004675);
-  background-image: -ms-linear-gradient(top, #b3d1e3, #004675);
-  background-image: -o-linear-gradient(top, #b3d1e3, #004675);
-  background-image: linear-gradient(to bottom, #b3d1e3, #004675);
-  text-decoration: none;
+    background: #b3d1e3;
+    background-image: -webkit-linear-gradient(top, #b3d1e3, #004675);
+    background-image: -moz-linear-gradient(top, #b3d1e3, #004675);
+    background-image: -ms-linear-gradient(top, #b3d1e3, #004675);
+    background-image: -o-linear-gradient(top, #b3d1e3, #004675);
+    background-image: linear-gradient(to bottom, #b3d1e3, #004675);
+    text-decoration: none;
 }
 
 .btn:hover {
-  background: #3cb0fd;
-  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
-  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-  text-decoration: none;
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    text-decoration: none;
 }
-
 </style>
-</head>
+{{end}}
 
+<div style="width: 237px;"><iframe style="display: block;" src="http://cdn1.willyweather.com/widget/loadView.html?id=11609" width="237" height="65" frameborder="0" scrolling="no"></iframe><a style="margin: -65px 0 0 0;z-index: 1;height: 65px;width: 20px;text-indent: -9999em;float: right;position: relative;display: block" href="http://www.willyweather.com/ca/santa-cruz-county/santa-cruz.html">Santa Cruz Weather Information</a></div>
 
-<body bgcolor="#E6E6FA">
-      
+<h1>List of Posts</h1>
+</br>
+
+{{for post in posts:}}
+    <div id='post_content_box'>
+        {{=A(post.title, _id='post_title', _href=URL('default', 'post', args=[post.id]))}}
+        <p id='post_dates'>
+            Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>
+            -----
+            Last Modified: {{=post.modified_date}}
+        </p>
+    </div>
+{{pass}}
+
+<hr>
+
 <table>
   <tr>
       <td>{{=B(T('Date Posted'))}}</td>
@@ -85,34 +113,3 @@ body {
 </table>
 </br>
 <p>{{=A('Add', _class='btn', _href=URL('default', 'add'))}}</p>
-
-
-<h1>List of Comments</h1>
-</br>
-<table cellspacing="15">
-  <tr>
-      <td>{{=B(T('Replying To Post'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Author'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Creation Date'))}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=B(T('Options'))}}</td>
-  </tr>
-  {{for comment in comments:}}
-  <tr>
-      {{# This line below displays the formatted name from post db instead of the post.id
-        # referenced by comment db.}}
-      <td>{{=db.comment.post_id.represent(comment.post_id)}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=comment.author}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=comment.creation_date}}</td>
-      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-      <td>{{=A(T('Edit'), _class='btn', _href=URL('default', 'edit_comment', args=[post.id]))}}</td>
-      <td>{{=A(T('Read'), _class='btn', _href=URL('default', 'read_comment', args=[post.id]))}}</td>
-  </tr>
-  {{pass}}
-</table>
-</br>
-<p>{{=A('Add', _class='btn', _href=URL('default', 'add_comment'))}}</p>
