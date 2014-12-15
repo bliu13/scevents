@@ -293,6 +293,34 @@ function pushCommentReply(comment_content, comment_creation_date,
     $("#subReplyForm" + sub_comment_id).after(newentry1);
     $("#subReplyForm" + sub_comment_id).after(newli);
 }
+
+function SubmitPostEditting(){
+    var minimumAgeEdit = document.getElementById('minimumAgeEdit').value;
+    var feesEdit = document.getElementById('feesEdit').value;
+    var expectedSizeEdit = document.getElementById('expectedSizeEdit').value;
+    var timeOfEventEdit = document.getElementById('timeOfEventEdit').value;
+    var locationEventEdit = document.getElementById('locationEventEdit').value;
+    var postContentEdit = document.getElementById('postContentEdit').value;
+    var post_id = {{=post.id}};
+
+    JSONdata = "minimumAgeEdit=" + minimumAgeEdit + "&feesEdit=" + feesEdit
+    + "&expectedSizeEdit=" + expectedSizeEdit + "&timeOfEventEdit="
+    + timeOfEventEdit + "&locationEventEdit=" + locationEventEdit
+    + "&postContentEdit=" + postContentEdit + "&post_id=" + post_id;
+
+    $.post('{{=post_url_edittingPost}}', JSONdata, function(jdata) {
+        var getData = JSON.parse(jdata);
+        var newPost = getData["newPost"];
+        Post_Box_Toggle();
+        $('#post_minimum_age').text(newPost.minimum_age);
+        $('#post_fees').text(newPost.fees);
+        $('#post_expected_size').text(newPost.expected_size);
+        $('#post_time_of_event').text(newPost.time_of_event);
+        $('#post_location_of_event').text(newPost.location_of_event);
+        $('#post_content').text(newPost.post_content);
+        $('#post_dates').innerHTML("Post Created: {{=post.creation_date}} by <b>{{=post.author}}</b>-----Last Modified: " + newPost.modified_date);
+    });
+}
 </script>
 {{end}}
 
@@ -326,16 +354,14 @@ function pushCommentReply(comment_content, comment_creation_date,
     </div>
 
     <div id="post_edit_form" style="display:none;">
-        {{=custom_edit_form.custom.begin}}
-            Minimum Age: <div>{{=custom_edit_form.custom.widget.minimum_age}}</div>
-            Fees: <div>{{=custom_edit_form.custom.widget.fees}}</div>
-            Expected Size: <div>{{=custom_edit_form.custom.widget.expected_size}}</div>
-            Time of Event: <div>{{=custom_edit_form.custom.widget.time_of_event}}</div>
-            Location of Event: <div>{{=custom_edit_form.custom.widget.location_of_event}}</div>
-            Post Description: <div>{{=custom_edit_form.custom.widget.post_content}}</div>
-            {{=custom_edit_form.custom.submit}}
-            <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
-        {{=custom_edit_form.custom.end}}
+        Minimum Age: <br/><input type="text" id="minimumAgeEdit" value="{{=post.minimum_age}}"> <br/>
+        Fees: <br/><input type="text" id="feesEdit" value="{{=post.fees}}"><br/>
+        Expected Size: <br/><input type="text" id="expectedSizeEdit" value="{{=post.expected_size}}"><br/>
+        Time of Event: <br/><input type="text" id="timeOfEventEdit" value="{{=post.time_of_event}}"><br/>
+        Location of Event: <br/><input type="text" id="locationEventEdit" value="{{=post.location_of_event}}"><br/>
+        Post Description: <br/><textarea type="text" id="postContentEdit" rows="8">{{=post.post_content}}</textarea><br/>
+        <input type="button" onclick="SubmitPostEditting()" value="Submit">
+        <input type="button" onclick="Post_Box_Toggle()" value="Cancel">
     </div>
     <!--form id="post_edit_form" style="display:none;">
         <textarea rows="8" id="edit_post_content" ></textarea>
